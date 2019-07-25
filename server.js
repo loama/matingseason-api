@@ -23,7 +23,7 @@ app
   .all('*', (req, res) => notFound(req, res))
 
 function index (req, res) {
-  helpers.result(req, res, 200, 'success', 'welcome to Zeel API', {})
+  helpers.result(req, res, 200, 'success', 'welcome to MatingSeason API', {})
 }
 
 function notFound (req, res) {
