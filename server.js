@@ -8,18 +8,16 @@ const cors = require('cors')
 // FUNCTIONS IMPORTS
 const helpers = require('./functions/helpers')
 
-// const providers = require('./functions/providers')
+const users = require('./functions/users')
 
 app
   .use(express.json())
   .use(cors())
-  .use((req, res, next) => helpers.takeTime(req, res, next))
-  .use((req, res, next) => helpers.validateToken(req, res, next))
 
   .get('/', (req, res) => index(req, res))
 
-// providers
-  // .get('/v1/providers', (req, res) => providers.get_all(req, res))
+// users
+  .post('/landing_users', (req, res) => users.landingRegister(req, res))
 
 // catch all routes, 404
   .all('*', (req, res) => notFound(req, res))
