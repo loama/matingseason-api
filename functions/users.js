@@ -22,5 +22,17 @@ exports.landingRegister = function (req, res) {
 
 exports.get_all = function (req, res) {
   // validate that user has enough permissions
-  helpers.result(req, res, 200, 'success', 'list of providers', {})
+  helpers.result(req, res, 200, 'success', 'list of users', {})
+}
+
+exports.login = function (req, res) {
+  helpers.result(req, res, 200, 'success', 'logged in', {})
+}
+
+exports.logout = function (req, res) {
+  helpers.result(req, res, 200, 'success', 'logged out', {})
+}
+
+exports.updateLocation = function (req, res) {
+  helpers.result(req, res, 200, 'success', 'updated location', {})
 }
