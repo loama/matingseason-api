@@ -80,6 +80,32 @@ exports.register = function (req, res) {
     })
 }
 
+exports.status = function (req, res) {
+  let status
+
+  if (req.body.status) {
+    status = 'active'
+  } else {
+    status = 'inactive'
+  }
+
+  db.sequelize.query('UPDATE users SET status = :status WHERE email = :email',
+    {
+      replacements: {
+        email: req.body.email,
+        status: status
+      },
+      type: db.sequelize.QueryTypes.UPDATE
+    })
+    .then(users => {
+      helpers.result(req, res, 200, 'success', 'updated', {})
+    })
+    .catch(err => {
+      req.error = err
+      helpers.result(req, res, 500, 'error', 'unknown error', {})
+    })
+}
+
 exports.logout = function (req, res) {
   helpers.result(req, res, 200, 'success', 'logged out', {})
 }

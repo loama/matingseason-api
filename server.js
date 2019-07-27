@@ -20,7 +20,7 @@ app
   .post('/landing_users', (req, res) => users.landingRegister(req, res))
   .post('/register', (req, res) => users.register(req, res))
   .post('/login', (req, res) => users.login(req, res))
-
+  .post('/status', (req, res) => users.status(req, res))
 // catch all routes, 404
   .all('*', (req, res) => notFound(req, res))
 
