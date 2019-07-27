@@ -130,3 +130,17 @@ exports.updateLocation = function (req, res) {
       helpers.result(req, res, 500, 'error', 'unknown error', {})
     })
 }
+
+exports.closeUsers = function (req, res) {
+  db.sequelize.query('SELECT * FROM (SELECT *, earth_distance(ll_to_earth(u.lat, u.lng), ll_to_earth(:lat, :lng)) AS distance FROM users_current_locations u) AS a WHERE distance < 30',
+    {
+      replacements: {
+        lat: req.body.lat,
+        lng: req.body.lng
+      },
+      type: db.sequelize.QueryTypes.SELECT
+    })
+    .then(users => {
+      helpers.result(req, res, 200, 'success', 'close users', users)
+    })
+}
