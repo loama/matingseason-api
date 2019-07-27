@@ -1,6 +1,8 @@
 const db = require('../database')
 const helpers = require('./helpers')
 
+const crypto = require('crypto')
+
 exports.landingRegister = function (req, res) {
   db.sequelize.query('INSERT INTO landing_users (email, created_at, updated_at) VALUES (:email, :created_at, :updated_at)',
     {
@@ -26,7 +28,49 @@ exports.get_all = function (req, res) {
 }
 
 exports.login = function (req, res) {
-  helpers.result(req, res, 200, 'success', 'logged in', {})
+  db.sequelize.query('SELECT * FROM users WHERE email = :email',
+    {
+      replacements: {
+        email: req.body.email
+      },
+      type: db.sequelize.QueryTypes.SELECT
+    })
+    .then(users => {
+      console.log(users[0])
+      let savedPassword = users[0].password
+      let givenPassword = crypto.createHash('sha256').update(req.body.password).digest('base64')
+
+      if (savedPassword === givenPassword) {
+        helpers.result(req, res, 200, 'success', 'logged in', users[0])
+      } else {
+        helpers.result(req, res, 401, 'error', 'wrong login', {})
+      }
+    })
+}
+
+exports.register = function (req, res) {
+  let password = crypto.createHash('sha256').update(req.body.password).digest('base64')
+
+  db.sequelize.query('INSERT INTO users (email, status, password, created_at, updated_at) VALUES (:email, :status, :password, :created_at, :updated_at)',
+    {
+      replacements: {
+        email: req.body.email,
+        status: 'inactive',
+        password: password,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      type: db.sequelize.QueryTypes.INSERT
+    })
+    .then(users => {
+      helpers.result(req, res, 200, 'success', 'registered', {})
+    })
+    .catch(err => {
+      req.error = err
+      helpers.result(req, res, 500, 'error', 'unknown error', {})
+    })
+
+  helpers.result(req, res, 200, 'success', 'user registered', {})
 }
 
 exports.logout = function (req, res) {
