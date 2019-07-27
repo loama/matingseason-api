@@ -111,5 +111,22 @@ exports.logout = function (req, res) {
 }
 
 exports.updateLocation = function (req, res) {
-  helpers.result(req, res, 200, 'success', 'updated location', {})
+  db.sequelize.query('INSERT INTO user_locations ("user", lat, lng, created_at, updated_at) VALUES (:id, :lat, :lng, :created_at, :updated_at)',
+    {
+      replacements: {
+        id: req.body.id,
+        lat: req.body.lat,
+        lng: req.body.lng,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      type: db.sequelize.QueryTypes.INSERT
+    })
+    .then(users => {
+      helpers.result(req, res, 200, 'success', 'updated location', {})
+    })
+    .catch(err => {
+      req.error = err
+      helpers.result(req, res, 500, 'error', 'unknown error', {})
+    })
 }

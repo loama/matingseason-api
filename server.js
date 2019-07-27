@@ -21,6 +21,7 @@ app
   .post('/register', (req, res) => users.register(req, res))
   .post('/login', (req, res) => users.login(req, res))
   .post('/status', (req, res) => users.status(req, res))
+  .post('/location', (req, res) => users.updateLocation(req, res))
 // catch all routes, 404
   .all('*', (req, res) => notFound(req, res))
 
