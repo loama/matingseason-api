@@ -63,14 +63,21 @@ exports.register = function (req, res) {
       type: db.sequelize.QueryTypes.INSERT
     })
     .then(users => {
-      helpers.result(req, res, 200, 'success', 'registered', {})
+      db.sequelize.query('SELECT * FROM users WHERE email = :email',
+        {
+          replacements: {
+            email: req.body.email
+          },
+          type: db.sequelize.QueryTypes.SELECT
+        })
+        .then(usersA => {
+          helpers.result(req, res, 200, 'success', 'registered', usersA[0])
+        })
     })
     .catch(err => {
       req.error = err
       helpers.result(req, res, 500, 'error', 'unknown error', {})
     })
-
-  helpers.result(req, res, 200, 'success', 'user registered', {})
 }
 
 exports.logout = function (req, res) {
