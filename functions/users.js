@@ -177,7 +177,7 @@ exports.like = function (req, res) {
 }
 
 exports.closeUsers = function (req, res) {
-  db.sequelize.query('SELECT * FROM (SELECT *, earth_distance(ll_to_earth(u.lat, u.lng), ll_to_earth(:lat, :lng)) AS distance FROM users_current_locations u) AS a WHERE distance < 30',
+  db.sequelize.query('SELECT * FROM (SELECT *, earth_distance(ll_to_earth(u.lat, u.lng), ll_to_earth(:lat, :lng)) AS distance FROM users_current_locations u) AS a WHERE distance < 100',
     {
       replacements: {
         lat: req.body.lat,
