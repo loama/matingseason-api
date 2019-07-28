@@ -55,13 +55,15 @@ exports.login = function (req, res) {
 exports.register = function (req, res) {
   let password = crypto.createHash('sha256').update(req.body.password).digest('base64')
 
+  console.log(req.body.profile_picture)
+
   db.sequelize.query('INSERT INTO users (email, status, password, profile_picture, age, username, created_at, updated_at) VALUES (:email, :status, :password, :profile_picture, :age, :username, :created_at, :updated_at)',
     {
       replacements: {
         email: req.body.email,
         status: 'inactive',
         password: password,
-        profile_picture: req.body.profile_picture,
+        profile_picture: 'req.body.profile_picture',
         age: req.body.age,
         username: req.body.username,
         created_at: new Date(),
