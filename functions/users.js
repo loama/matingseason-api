@@ -55,12 +55,15 @@ exports.login = function (req, res) {
 exports.register = function (req, res) {
   let password = crypto.createHash('sha256').update(req.body.password).digest('base64')
 
-  db.sequelize.query('INSERT INTO users (email, status, password, created_at, updated_at) VALUES (:email, :status, :password, :created_at, :updated_at)',
+  db.sequelize.query('INSERT INTO users (email, status, password, profile_picture, age, username, created_at, updated_at) VALUES (:email, :status, :password, :profile_picture, :age, :username, :created_at, :updated_at)',
     {
       replacements: {
         email: req.body.email,
         status: 'inactive',
         password: password,
+        profile_picture: req.body.profile_picture,
+        age: req.body.age,
+        username: req.body.username,
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -128,6 +131,42 @@ exports.updateLocation = function (req, res) {
     })
     .then(users => {
       helpers.result(req, res, 200, 'success', 'updated location', {})
+    })
+    .catch(err => {
+      req.error = err
+      helpers.result(req, res, 500, 'error', 'unknown error', {})
+    })
+}
+
+exports.like = function (req, res) {
+  db.sequelize.query('INSERT INTO likes (liker, liked, created_at, updated_at) VALUES (:liker, :liked, :created_at, :updated_at)',
+    {
+      replacements: {
+        liker: req.body.liker,
+        liked: req.body.liked,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      type: db.sequelize.QueryTypes.INSERT
+    })
+    .then(users => {
+      db.sequelize.query('SELECT * FROM matches m WHERE liker = :liker AND liked = :liked',
+        {
+          replacements: {
+            liker: req.body.liker,
+            liked: req.body.liked
+          },
+          type: db.sequelize.QueryTypes.SELECT
+        })
+        .then(matches => {
+          let match = false
+
+          if (matches.length > 0) {
+            match = true
+          }
+
+          helpers.result(req, res, 200, 'success', 'liked', { match: match })
+        })
     })
     .catch(err => {
       req.error = err

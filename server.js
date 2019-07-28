@@ -22,6 +22,7 @@ app
   .post('/login', (req, res) => users.login(req, res))
   .post('/status', (req, res) => users.status(req, res))
   .post('/location', (req, res) => users.updateLocation(req, res))
+  .post('/like', (req, res) => users.like(req, res))
   .post('/closeUsers', (req, res) => users.closeUsers(req, res))
 // catch all routes, 404
   .all('*', (req, res) => notFound(req, res))
