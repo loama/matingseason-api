@@ -189,3 +189,16 @@ exports.closeUsers = function (req, res) {
       helpers.result(req, res, 200, 'success', 'close users', users)
     })
 }
+
+exports.matches = function (req, res) {
+  db.sequelize.query('SELECT * FROM matches WHERE liker = :liker',
+    {
+      replacements: {
+        liker: req.body.liker
+      },
+      type: db.sequelize.QueryTypes.SELECT
+    })
+    .then(matches => {
+      helpers.result(req, res, 200, 'success', 'matches', matches)
+    })
+}
