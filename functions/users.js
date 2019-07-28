@@ -28,6 +28,10 @@ exports.get_all = function (req, res) {
 }
 
 exports.login = function (req, res) {
+  if (req.body.email.length === 0) {
+    helpers.result(req, res, 401, 'error', 'not logged in', {})
+  }
+
   db.sequelize.query('SELECT * FROM users WHERE email = :email',
     {
       replacements: {
