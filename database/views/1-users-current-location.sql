@@ -1,10 +1,13 @@
 CREATE OR REPLACE VIEW users_current_locations AS
-SELECT u.id, u.email, u.status, ul.lat, ul.lng, u.password, ul.created_at AS last_location_update FROM users u
-LEFT JOIN user_locations ul
-	ON ul.user = u.id
-	AND ul.id = (
-		SELECT id
-		FROM user_locations ul2
-		ORDER BY id DESC
-		LIMIT 1
-	)
+	SELECT DISTINCT ON (user_locations.user) users.id,
+		users.email,
+		users.status,
+		user_locations.lat,
+		user_locations.lng,
+		users.password,
+		user_locations.updated_at AS last_location_update
+	FROM user_locations
+
+	LEFT JOIN users ON user_locations.user = users.id
+
+	ORDER BY user_locations.user, user_locations.id DESC
